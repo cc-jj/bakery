@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "~=0.70"
+uvicorn = "~=0.16"
+alembic = "~=1.7"
+passlib = "~=1.7"
+python-jose = "~=3.3"
+
+[dev-packages]
+Faker = "*"
+pytest = "*"
+pytest-dotenv = "*"
+black = "*"
+freezegun = "*"
+requests = "*"
+click = "*"
+
+[requires]
+python_version = "3.9"
+
+[packages.pydantic]
+extras = [ "email",]
+version = "~=1.8"
+
+[packages.fastapi-pagination]
+extras = [ "sqlalchemy",]
+version = "~=0.9"
