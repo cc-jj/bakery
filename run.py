@@ -12,7 +12,7 @@ def correct_cwd():
     """alembic and SQLALCHEMY_DATABASE_URL requires running from the root directory"""
     root_dir = os.path.dirname(os.path.abspath(__file__))
     if os.getcwd() != root_dir:
-        click.echo('Changing current working directory to', root_dir)
+        click.echo(f'Changing current working directory to {root_dir}')
         os.chdir(root_dir)
 
 
