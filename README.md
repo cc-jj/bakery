@@ -4,9 +4,8 @@
 3. ~~Migrations~~
 4. Async
 5. ~~Pagination~~
-6. ~~CORS~~
-7. Logging (Uvicorn and Python)
-8. Frontend (templates)
+6. Logging (Uvicorn and Python)
+7. Frontend (templates)
 
 # Installation
 ```bash
