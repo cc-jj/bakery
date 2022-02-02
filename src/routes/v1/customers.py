@@ -17,8 +17,9 @@ def create_customer(customer: schemas.CustomerCreate, db: Session = Depends(get_
     return crud.create_customer(db, customer)
 
 
-@router.patch("/", response_model=schemas.Customer)
-def update_customer(customer: schemas.CustomerEdit, db: Session = Depends(get_db)):
+@router.post("/{customer_id}", response_model=schemas.Customer)
+def update_customer(customer_id: int, customer: schemas.CustomerCreate, db: Session = Depends(get_db)):
+    customer = schemas.CustomerEdit(id=customer_id, **customer.dict())
     return crud.update_customer(db, customer)
 
 
