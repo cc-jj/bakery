@@ -2,6 +2,6 @@ import os
 
 JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGO = "HS256"
-JWT_TIMEOUT = int(os.getenv("JWT_TIMEOUT", 60))
+JWT_TIMEOUT_MINUTES = int(os.getenv("JWT_TIMEOUT_MINUTES", 60))
 
 SQLALCHEMY_DATABASE_URL = os.environ["SQLALCHEMY_DATABASE_URL"]

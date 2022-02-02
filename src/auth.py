@@ -7,17 +7,17 @@ from passlib.context import CryptContext
 from src import settings
 
 
-_pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return _pwd_context.verify(plain_password, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def create_access_token(username: str) -> str:
     to_encode = {
         "sub": username,
-        "exp": datetime.utcnow() + timedelta(minutes=settings.JWT_TIMEOUT),
+        "exp": datetime.utcnow() + timedelta(minutes=settings.JWT_TIMEOUT_MINUTES),
     }
     return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGO)
 
