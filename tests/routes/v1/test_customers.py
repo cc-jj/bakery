@@ -126,9 +126,7 @@ def customer_cj(db):
     return serialize_customer(
         crud.create_customer(
             db,
-            schemas.CustomerCreate(
-                name="cj", email="cj@domain.com", phone="(330) 867-5309"
-            ),
+            schemas.CustomerCreate(name="cj", email="cj@domain.com", phone="(330) 867-5309"),
         )
     )
 
@@ -138,9 +136,7 @@ def customer_sarah(db):
     return serialize_customer(
         crud.create_customer(
             db,
-            schemas.CustomerCreate(
-                name="sarah", email="sarah@domain.com", phone="(714) 867-5309"
-            ),
+            schemas.CustomerCreate(name="sarah", email="sarah@domain.com", phone="(714) 867-5309"),
         )
     )
 
@@ -150,8 +146,6 @@ def customer_sarah_2(db):
     return serialize_customer(
         crud.create_customer(
             db,
-            schemas.CustomerCreate(
-                name="sarah", email="sarah2@domain.com", phone="(216) 867-5309"
-            ),
+            schemas.CustomerCreate(name="sarah", email="sarah2@domain.com", phone="(216) 867-5309"),
         )
     )

@@ -13,9 +13,7 @@ router = APIRouter(
 
 
 @router.post("/categories", response_model=schemas.MenuCategory, status_code=201)
-def create_menu_category(
-    category: schemas.MenuCategoryCreate, db: Session = Depends(get_db)
-):
+def create_menu_category(category: schemas.MenuCategoryCreate, db: Session = Depends(get_db)):
     return crud.create_menu_category(db, category)
 
 

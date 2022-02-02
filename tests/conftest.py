@@ -80,9 +80,7 @@ def campaign(db):
 
 @pytest.fixture
 def menu_category(db):
-    model = crud.create_menu_category(
-        db, schemas.MenuCategoryCreate(name="Cocoa Bombs")
-    )
+    model = crud.create_menu_category(db, schemas.MenuCategoryCreate(name="Cocoa Bombs"))
     return serialize_model(model, schemas.MenuCategory)
 
 

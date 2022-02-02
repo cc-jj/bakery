@@ -21,9 +21,7 @@ def create_payment(payment: schemas.PaymentCreate, db: Session = Depends(get_db)
 
 
 @router.patch("/{payment_id}", response_model=schemas.Order)
-def update_payment(
-    payment_id: int, payment: schemas.PaymentEdit, db: Session = Depends(get_db)
-):
+def update_payment(payment_id: int, payment: schemas.PaymentEdit, db: Session = Depends(get_db)):
     return crud.update_payment(db, payment_id, payment)
 
 

@@ -28,9 +28,7 @@ def read_customer(db: Session, customer_id: int) -> Optional[models.Customer]:
     return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
 
 
-def read_customers(
-    db: Session, name: Optional[str], email: Optional[str], phone: Optional[str]
-):
+def read_customers(db: Session, name: Optional[str], email: Optional[str], phone: Optional[str]):
     query = db.query(models.Customer)
     if name is not None:
         if name.strip() == "":
@@ -50,9 +48,7 @@ def read_customers(
 def update_customer(
     db: Session, customer_id: int, customer: schemas.CustomerEdit
 ) -> models.Customer:
-    db_customer = (
-        db.query(models.Customer).filter(models.Customer.id == customer_id).first()
-    )
+    db_customer = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
     if db_customer is None:
         raise HTTPException(404, "Customer not found")
     for attr, value in customer.dict(exclude={"id"}, exclude_unset=True).items():
@@ -65,9 +61,7 @@ def update_customer(
 # MenuCategory
 
 
-def create_menu_category(
-    db: Session, category: schemas.MenuCategoryCreate
-) -> models.MenuCategory:
+def create_menu_category(db: Session, category: schemas.MenuCategoryCreate) -> models.MenuCategory:
     db_category = models.MenuCategory(**category.dict())
     db.add(db_category)
     db.commit()
@@ -75,11 +69,7 @@ def create_menu_category(
 
 
 def read_menu_category(db: Session, category_id: int) -> Optional[models.MenuCategory]:
-    return (
-        db.query(models.MenuCategory)
-        .filter(models.MenuCategory.id == category_id)
-        .first()
-    )
+    return db.query(models.MenuCategory).filter(models.MenuCategory.id == category_id).first()
 
 
 def read_menu_categories(db: Session):
@@ -90,9 +80,7 @@ def update_menu_category(
     db: Session, category_id: int, category: schemas.MenuCategoryEdit
 ) -> models.MenuCategory:
     db_category = (
-        db.query(models.MenuCategory)
-        .filter(models.MenuCategory.id == category_id)
-        .first()
+        db.query(models.MenuCategory).filter(models.MenuCategory.id == category_id).first()
     )
     if db_category is None:
         raise HTTPException(404, "Menu category not found")
@@ -127,9 +115,7 @@ def read_menu_items(db: Session, category_id: int = None):
 def update_menu_item(
     db: Session, menu_item_id: int, menu_item: schemas.MenuItemEdit
 ) -> models.MenuItem:
-    db_menu_item = (
-        db.query(models.MenuItem).filter(models.MenuItem.id == menu_item_id).first()
-    )
+    db_menu_item = db.query(models.MenuItem).filter(models.MenuItem.id == menu_item_id).first()
     if db_menu_item is None:
         raise HTTPException(404, "Menu item not found")
     for attr, value in menu_item.dict(exclude={"id"}, exclude_unset=True).items():
@@ -160,9 +146,7 @@ def read_campaigns(db: Session):
 def update_campaign(
     db: Session, campaign_id: int, campaign: schemas.CampaignEdit
 ) -> models.Campaign:
-    db_campaign = (
-        db.query(models.Campaign).filter(models.Campaign.id == campaign_id).first()
-    )
+    db_campaign = db.query(models.Campaign).filter(models.Campaign.id == campaign_id).first()
     if db_campaign is None:
         raise HTTPException(404, "Campaign not found")
     for attr, value in campaign.dict(exclude={"id"}, exclude_unset=True).items():
@@ -195,12 +179,8 @@ def read_payments(
     return query
 
 
-def update_payment(
-    db: Session, payment_id: int, payment: schemas.PaymentEdit
-) -> models.Order:
-    db_payment = (
-        db.query(models.Payment).filter(models.Payment.id == payment_id).first()
-    )
+def update_payment(db: Session, payment_id: int, payment: schemas.PaymentEdit) -> models.Order:
+    db_payment = db.query(models.Payment).filter(models.Payment.id == payment_id).first()
     if db_payment is None:
         raise HTTPException(404, "Payment not found")
     if db_payment.order_id != payment.order_id:
@@ -215,9 +195,7 @@ def update_payment(
 
 
 def delete_payment(db: Session, payment_id: int) -> models.Order:
-    db_payment = (
-        db.query(models.Payment).filter(models.Payment.id == payment_id).first()
-    )
+    db_payment = db.query(models.Payment).filter(models.Payment.id == payment_id).first()
     if db_payment is None:
         raise HTTPException(404, "Payment not found")
     db.delete(db_payment)
@@ -238,9 +216,7 @@ def create_order_item(db: Session, order_item: schemas.OrderItemCreate) -> model
 def update_order_item(
     db: Session, order_item_id: int, order_item: schemas.OrderItemEdit
 ) -> models.Order:
-    db_order_item = (
-        db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
-    )
+    db_order_item = db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
     if db_order_item is None:
         raise HTTPException(404, "Order item not found")
     if db_order_item.order_id != order_item.order_id:
@@ -254,16 +230,12 @@ def update_order_item(
 
 
 def delete_order_item(db: Session, order_item_id: int) -> models.Order:
-    db_order_item = (
-        db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
-    )
+    db_order_item = db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
     if db_order_item is None:
         raise HTTPException(404, detail="Order item not found")
     db.delete(db_order_item)
     db.commit()
-    return (
-        db.query(models.Order).filter(models.Order.id == db_order_item.order_id).first()
-    )
+    return db.query(models.Order).filter(models.Order.id == db_order_item.order_id).first()
 
 
 # Order

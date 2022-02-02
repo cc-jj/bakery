@@ -15,9 +15,7 @@ router = APIRouter(
 
 
 @router.post("/items", response_model=schemas.Order, status_code=201)
-def create_order_item(
-    order_item: schemas.OrderItemCreate, db: Session = Depends(get_db)
-):
+def create_order_item(order_item: schemas.OrderItemCreate, db: Session = Depends(get_db)):
     return crud.create_order_item(db, order_item)
 
 
@@ -51,9 +49,7 @@ def get_orders(completed: bool, db: Session = Depends(get_db)):
 
 
 @router.patch("/{order_id}", response_model=schemas.Order)
-def update_order(
-    order_id: int, order: schemas.OrderEdit, db: Session = Depends(get_db)
-):
+def update_order(order_id: int, order: schemas.OrderEdit, db: Session = Depends(get_db)):
     return crud.update_order(db, order_id, order)
 
 
