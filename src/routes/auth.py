@@ -23,5 +23,5 @@ def login(schema: LoginSchema, db: Session = Depends(get_db)):
     if db_user is not None:
         if auth.verify_password(schema.password, db_user.hashed_password):
             token = auth.create_access_token(schema.username)
-            return {"token": token}
+            return {"user": {"name": db_user.name}, "token": token}
     raise HTTPException(400, "Username or password is incorrect")
