@@ -14,7 +14,7 @@ def test_campaigns(client, auth_headers):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/campaigns/", json=payload)
+        response = client.post("/api/v1/campaigns/", json=payload)
     assert response.status_code == 201
     campaign = response.json()
     assert campaign == {
@@ -28,7 +28,7 @@ def test_campaigns(client, auth_headers):
     payload = {**payload, "id": 1, "date_end": "2021-12-19"}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/campaigns/", json=payload)
+        response = client.patch("/api/v1/campaigns/", json=payload)
     assert response.status_code == 200
     campaign = response.json()
     assert campaign == {
@@ -38,12 +38,12 @@ def test_campaigns(client, auth_headers):
     }
 
     # get one
-    response = client.get("/v1/campaigns/1")
+    response = client.get("/api/v1/campaigns/1")
     assert response.status_code == 200
     assert response.json() == campaign
 
     # get many
-    response = client.get("/v1/campaigns/?offset=0&limit=10")
+    response = client.get("/api/v1/campaigns/?offset=0&limit=10")
     assert response.status_code == 200
     assert response.json() == {
         "items": [campaign],
@@ -55,7 +55,7 @@ def test_campaigns(client, auth_headers):
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/v1/campaigns/").status_code == 403
-    assert client.patch("/v1/campaigns/").status_code == 403
-    assert client.get("/v1/campaigns/1").status_code == 403
-    assert client.get("/v1/campaigns/?offset=0&limit=10").status_code == 403
+    assert client.post("/api/v1/campaigns/").status_code == 403
+    assert client.patch("/api/v1/campaigns/").status_code == 403
+    assert client.get("/api/v1/campaigns/1").status_code == 403
+    assert client.get("/api/v1/campaigns/?offset=0&limit=10").status_code == 403

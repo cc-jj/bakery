@@ -12,6 +12,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["Authorization"],
 )
-app.include_router(routes.auth.router)
-app.include_router(routes.v1.router)
+app.include_router(routes.auth.router, prefix='/api')
+app.include_router(routes.v1.router, prefix='/api')
 add_pagination(app)

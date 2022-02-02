@@ -47,7 +47,7 @@ def serialize_model(model: Base, schema_cls: Type[pydantic.BaseModel]):
 @pytest.fixture
 def user(db):
     db_user = models.User(
-        name="cj", hashed_password=auth._pwd_context.hash("hunter123")
+        name="cj", hashed_password=auth.pwd_context.hash("hunter123")
     )
     db.add(db_user)
     db.commit()

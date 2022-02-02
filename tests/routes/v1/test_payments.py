@@ -15,7 +15,7 @@ def test_payments(client, auth_headers, order):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/payments/", json=payload)
+        response = client.post("/api/v1/payments/", json=payload)
     assert response.status_code == 201
     order_with_payment = response.json()
     payment = {
@@ -30,14 +30,14 @@ def test_payments(client, auth_headers, order):
     payload = {**payload, "id": 1, "date": "2021-12-19"}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/payments/", json=payload)
+        response = client.patch("/api/v1/payments/", json=payload)
     assert response.status_code == 200
     order_with_payment = response.json()
     payment = {**payment, **payload, "date_modified": date_modified.isoformat()}
     assert order_with_payment == {**order, "payments": [payment]}
 
     # get many
-    response = client.get("/v1/payments/?offset=0&limit=10")
+    response = client.get("/api/v1/payments/?offset=0&limit=10")
     assert response.status_code == 200
     assert response.json() == {
         "items": [payment],
@@ -47,7 +47,7 @@ def test_payments(client, auth_headers, order):
     }
 
     # delete
-    response = client.delete("/v1/payments/1")
+    response = client.delete("/api/v1/payments/1")
     assert response.status_code == 200
     order_without_payment = response.json()
     assert order_without_payment == order
@@ -55,7 +55,7 @@ def test_payments(client, auth_headers, order):
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/v1/payments/").status_code == 403
-    assert client.patch("/v1/payments/").status_code == 403
-    assert client.get("/v1/payments/").status_code == 403
-    assert client.delete("/v1/payments/1").status_code == 403
+    assert client.post("/api/v1/payments/").status_code == 403
+    assert client.patch("/api/v1/payments/").status_code == 403
+    assert client.get("/api/v1/payments/").status_code == 403
+    assert client.delete("/api/v1/payments/1").status_code == 403

@@ -19,7 +19,7 @@ def test_create_edit(client, auth_headers):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/customers/", json=payload)
+        response = client.post("/api/v1/customers/", json=payload)
     assert response.status_code == 201
     customer = response.json()
     assert customer == {
@@ -33,7 +33,7 @@ def test_create_edit(client, auth_headers):
     payload = {**payload, "id": 1, "notes": "a new note"}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/customers/", json=payload)
+        response = client.patch("/api/v1/customers/", json=payload)
     assert response.status_code == 200
     customer = response.json()
     assert customer == {
@@ -48,12 +48,12 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
     client.headers.update(auth_headers)
 
     # get by id
-    response = client.get(f'/v1/customers/{customer_cj["id"]}')
+    response = client.get(f'/api/v1/customers/{customer_cj["id"]}')
     assert response.status_code == 200
     assert response.json() == customer_cj
 
     # get all
-    response = client.get("/v1/customers")
+    response = client.get("/api/v1/customers")
     assert response.status_code == 200
     assert response.json() == {
         "total": 3,
@@ -63,7 +63,7 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
     }
 
     # get by name
-    response = client.get("/v1/customers?name=sarah")
+    response = client.get("/api/v1/customers?name=sarah")
     assert response.status_code == 200
     assert response.json() == {
         "total": 2,
@@ -74,7 +74,7 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
 
     # get by email
     for customer in (customer_cj, customer_sarah, customer_sarah_2):
-        response = client.get(f'/v1/customers?email={customer["email"]}')
+        response = client.get(f'/api/v1/customers?email={customer["email"]}')
         assert response.status_code == 200
         assert response.json() == {
             "total": 1,
@@ -85,7 +85,7 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
 
     # get by phone
     for customer in (customer_cj, customer_sarah, customer_sarah_2):
-        response = client.get(f'/v1/customers?phone={customer["phone"]}')
+        response = client.get(f'/api/v1/customers?phone={customer["phone"]}')
         assert response.status_code == 200
         assert response.json() == {
             "total": 1,
@@ -97,7 +97,7 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
     # get by name and phone and email
     for customer in (customer_cj, customer_sarah, customer_sarah_2):
         response = client.get(
-            f'/v1/customers?name={customer["name"]}&email={customer["email"]}&phone={customer["phone"]}',
+            f'/api/v1/customers?name={customer["name"]}&email={customer["email"]}&phone={customer["phone"]}',
         )
         assert response.status_code == 200
         assert response.json() == {
@@ -110,10 +110,10 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/v1/customers/").status_code == 403
-    assert client.patch("/v1/customers/").status_code == 403
-    assert client.get("/v1/customers/1").status_code == 403
-    assert client.get("/v1/customers/").status_code == 403
+    assert client.post("/api/v1/customers/").status_code == 403
+    assert client.patch("/api/v1/customers/").status_code == 403
+    assert client.get("/api/v1/customers/1").status_code == 403
+    assert client.get("/api/v1/customers/").status_code == 403
 
 
 def serialize_customer(customer: models.Customer):

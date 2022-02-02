@@ -18,7 +18,7 @@ def test_order_items(client, auth_headers, order):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/orders/items/", json=payload)
+        response = client.post("/api/v1/orders/items/", json=payload)
     assert response.status_code == 201
     order_with_new_item = response.json()
     original_order_item = order["order_items"][0]
@@ -41,7 +41,7 @@ def test_order_items(client, auth_headers, order):
     payload = {**payload, "id": 2, "charged_price": 55}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/orders/items/", json=payload)
+        response = client.patch("/api/v1/orders/items/", json=payload)
     assert response.status_code == 200
     order_with_new_item = response.json()
     new_order_item = {
@@ -58,7 +58,7 @@ def test_order_items(client, auth_headers, order):
     }
 
     # delete
-    response = client.delete("/v1/orders/items/2")
+    response = client.delete("/api/v1/orders/items/2")
     assert response.status_code == 200
     assert response.json() == order
 
@@ -93,7 +93,7 @@ def test_orders(client, auth_headers, campaign, customer, menu_item, db):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/orders/", json=payload)
+        response = client.post("/api/v1/orders/", json=payload)
     assert response.status_code == 201
     order = response.json()
     assert order == {
@@ -130,7 +130,7 @@ def test_orders(client, auth_headers, campaign, customer, menu_item, db):
     payload.pop("payments")
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/orders/", json=payload)
+        response = client.patch("/api/v1/orders/", json=payload)
     assert response.status_code == 200
     updated_order = response.json()
     assert updated_order == {
@@ -140,12 +140,12 @@ def test_orders(client, auth_headers, campaign, customer, menu_item, db):
     }
 
     # get one
-    response = client.get("/v1/orders/1")
+    response = client.get("/api/v1/orders/1")
     assert response.status_code == 200
     assert response.json() == updated_order
 
     # get many
-    response = client.get("/v1/orders/?completed=True")
+    response = client.get("/api/v1/orders/?completed=True")
     assert response.status_code == 200
     assert response.json() == {
         "items": [updated_order],
@@ -154,12 +154,12 @@ def test_orders(client, auth_headers, campaign, customer, menu_item, db):
         "total": 1,
     }
 
-    response = client.get("/v1/orders/?completed=False")
+    response = client.get("/api/v1/orders/?completed=False")
     assert response.status_code == 200
     assert response.json() == {"items": [], "offset": 0, "limit": 50, "total": 0}
 
     # delete
-    response = client.delete("/v1/orders/1")
+    response = client.delete("/api/v1/orders/1")
     assert response.status_code == 200
     assert response.json() == {"success": True}
 
@@ -171,11 +171,11 @@ def test_orders(client, auth_headers, campaign, customer, menu_item, db):
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/v1/orders/").status_code == 403
-    assert client.patch("/v1/orders/").status_code == 403
-    assert client.get("/v1/orders/1").status_code == 403
-    assert client.get("/v1/orders/").status_code == 403
-    assert client.delete("/v1/orders/1").status_code == 403
-    assert client.post("/v1/orders/items/").status_code == 403
-    assert client.patch("/v1/orders/items/").status_code == 403
-    assert client.delete("/v1/orders/items/1").status_code == 403
+    assert client.post("/api/v1/orders/").status_code == 403
+    assert client.patch("/api/v1/orders/").status_code == 403
+    assert client.get("/api/v1/orders/1").status_code == 403
+    assert client.get("/api/v1/orders/").status_code == 403
+    assert client.delete("/api/v1/orders/1").status_code == 403
+    assert client.post("/api/v1/orders/items/").status_code == 403
+    assert client.patch("/api/v1/orders/items/").status_code == 403
+    assert client.delete("/api/v1/orders/items/1").status_code == 403

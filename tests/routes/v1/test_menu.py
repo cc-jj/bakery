@@ -12,7 +12,7 @@ def test_categories(client, auth_headers):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/menu/categories/", json=payload)
+        response = client.post("/api/v1/menu/categories/", json=payload)
     assert response.status_code == 201
     category = response.json()
     assert category == {
@@ -26,7 +26,7 @@ def test_categories(client, auth_headers):
     payload = {**payload, "id": 1, "name": "Cocoa Bombs"}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/menu/categories/", json=payload)
+        response = client.patch("/api/v1/menu/categories/", json=payload)
     assert response.status_code == 200
     category = response.json()
     assert category == {
@@ -36,12 +36,12 @@ def test_categories(client, auth_headers):
     }
 
     # get one
-    response = client.get("/v1/menu/categories/1")
+    response = client.get("/api/v1/menu/categories/1")
     assert response.status_code == 200
     assert response.json() == category
 
     # get many
-    response = client.get("/v1/menu/categories/?offset=0&limit=10")
+    response = client.get("/api/v1/menu/categories/?offset=0&limit=10")
     assert response.status_code == 200
     assert response.json() == {
         "items": [category],
@@ -64,7 +64,7 @@ def test_menu_items(client, auth_headers, menu_category):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/v1/menu/", json=payload)
+        response = client.post("/api/v1/menu/", json=payload)
     assert response.status_code == 201
     menu_item = response.json()
     assert menu_item == {
@@ -79,7 +79,7 @@ def test_menu_items(client, auth_headers, menu_category):
     payload = {**payload, "id": 1, "price": 6.0}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.patch("/v1/menu/", json=payload)
+        response = client.patch("/api/v1/menu/", json=payload)
     assert response.status_code == 200
     menu_item = response.json()
     assert menu_item == {
@@ -90,12 +90,12 @@ def test_menu_items(client, auth_headers, menu_category):
     }
 
     # get one
-    response = client.get("/v1/menu/1")
+    response = client.get("/api/v1/menu/1")
     assert response.status_code == 200
     assert response.json() == menu_item
 
     # get many
-    response = client.get("/v1/menu/?offset=0&limit=10")
+    response = client.get("/api/v1/menu/?offset=0&limit=10")
     assert response.status_code == 200
     assert response.json() == {
         "items": [menu_item],
@@ -107,11 +107,11 @@ def test_menu_items(client, auth_headers, menu_category):
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/v1/menu/categories/").status_code == 403
-    assert client.patch("/v1/menu/categories/").status_code == 403
-    assert client.get("/v1/menu/categories/1").status_code == 403
-    assert client.get("/v1/menu/categories/").status_code == 403
-    assert client.post("/v1/menu/").status_code == 403
-    assert client.patch("/v1/menu/").status_code == 403
-    assert client.get("/v1/menu/1").status_code == 403
-    assert client.get("/v1/menu/").status_code == 403
+    assert client.post("/api/v1/menu/categories/").status_code == 403
+    assert client.patch("/api/v1/menu/categories/").status_code == 403
+    assert client.get("/api/v1/menu/categories/1").status_code == 403
+    assert client.get("/api/v1/menu/categories/").status_code == 403
+    assert client.post("/api/v1/menu/").status_code == 403
+    assert client.patch("/api/v1/menu/").status_code == 403
+    assert client.get("/api/v1/menu/1").status_code == 403
+    assert client.get("/api/v1/menu/").status_code == 403
