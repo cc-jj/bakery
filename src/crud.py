@@ -3,9 +3,29 @@ from datetime import date
 from typing import Optional
 
 from fastapi.exceptions import HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from src import models, schemas
+
+
+def _create_unique_constrain_error_msg(exc: IntegrityError) -> Optional[str]:
+    pattern = r"^UNIQUE constraint failed: ([a-z_]+)\.([a-z_]+)$"
+    for arg in exc.orig.args:
+        assert isinstance(arg, str)
+        match = re.match(pattern, arg)
+        if match:
+            table, column = match.groups()
+            singular = table[:-3] + "y" if table.endswith("ies") else table[:-1]
+            record = singular.replace("_", " ")
+            return f"A {record} already exists with that {column}"
+    return None
+
+
+def _handle_integrity_error(exc: IntegrityError):
+    if error_msg := _create_unique_constrain_error_msg(exc):
+        raise HTTPException(400, error_msg)
+
 
 # User
 
@@ -20,7 +40,11 @@ def read_user(db: Session, username: str) -> Optional[models.User]:
 def create_customer(db: Session, customer: schemas.CustomerCreate) -> models.Customer:
     db_customer = models.Customer(**customer.dict())
     db.add(db_customer)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_customer
 
 
@@ -54,7 +78,11 @@ def update_customer(
     for attr, value in customer.dict(exclude={"id"}, exclude_unset=True).items():
         setattr(db_customer, attr, value)
     db.add(db_customer)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_customer
 
 
@@ -64,7 +92,11 @@ def update_customer(
 def create_menu_category(db: Session, category: schemas.MenuCategoryCreate) -> models.MenuCategory:
     db_category = models.MenuCategory(**category.dict())
     db.add(db_category)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_category
 
 
@@ -87,7 +119,11 @@ def update_menu_category(
     for attr, value in category.dict(exclude={"id"}, exclude_unset=True).items():
         setattr(db_category, attr, value)
     db.add(db_category)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_category
 
 
@@ -97,7 +133,11 @@ def update_menu_category(
 def create_menu_item(db: Session, menu_item: schemas.MenuItemCreate) -> models.MenuItem:
     db_menu_item = models.MenuItem(**menu_item.dict())
     db.add(db_menu_item)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_menu_item
 
 
@@ -121,7 +161,11 @@ def update_menu_item(
     for attr, value in menu_item.dict(exclude={"id"}, exclude_unset=True).items():
         setattr(db_menu_item, attr, value)
     db.add(db_menu_item)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_menu_item
 
 
@@ -131,7 +175,11 @@ def update_menu_item(
 def create_campaign(db: Session, campaign: schemas.CampaignCreate) -> models.Campaign:
     db_campaign = models.Campaign(**campaign.dict())
     db.add(db_campaign)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_campaign
 
 
@@ -152,7 +200,11 @@ def update_campaign(
     for attr, value in campaign.dict(exclude={"id"}, exclude_unset=True).items():
         setattr(db_campaign, attr, value)
     db.add(db_campaign)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        _handle_integrity_error(exc)
+        raise
     return db_campaign
 
 

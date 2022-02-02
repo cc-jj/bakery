@@ -76,7 +76,7 @@ class MenuCategory(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
     date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
-    name = Column(String, nullable=False)
+    name = Column(String, unique=True, nullable=False)
 
     menu_items = relationship("MenuItem", back_populates="category")
 
@@ -123,7 +123,7 @@ class Campaign(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
     date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
-    name = Column(String, nullable=False)
+    name = Column(String, unique=True, nullable=False)
     description = Column(String, nullable=False)
     date_start = Column(Date)
     date_end = Column(Date)

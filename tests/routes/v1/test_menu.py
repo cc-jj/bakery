@@ -52,6 +52,28 @@ def test_categories(client, auth_headers):
     }
 
 
+def test_create_category_unique_constraint(client, auth_headers, menu_category):
+    client.headers.update(auth_headers)
+
+    payload = {"name": menu_category["name"]}
+    response = client.post("/api/v1/menu/categories", json=payload)
+    assert response.status_code == 400
+    assert response.json() == {"detail": "A menu category already exists with that name"}
+
+
+def test_edit_category_unique_constraint(client, auth_headers, menu_category):
+    client.headers.update(auth_headers)
+
+    category_2 = {"name": "foo"}
+    response = client.post("/api/v1/menu/categories", json=category_2)
+    assert response.status_code == 201
+
+    payload = {"name": "foo"}
+    response = client.patch(f'/api/v1/menu/categories/{menu_category["id"]}', json=payload)
+    assert response.status_code == 400
+    assert response.json() == {"detail": "A menu category already exists with that name"}
+
+
 def test_menu_items(client, auth_headers, menu_category):
     client.headers.update(auth_headers)
 

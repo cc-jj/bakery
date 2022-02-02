@@ -54,6 +54,33 @@ def test_campaigns(client, auth_headers):
     }
 
 
+def test_create_campaign_unique_constraint(client, auth_headers, campaign):
+    client.headers.update(auth_headers)
+
+    payload = {"name": campaign["name"], "description": "foo"}
+    response = client.post("/api/v1/campaigns", json=payload)
+    assert response.status_code == 400
+    assert response.json() == {"detail": "A campaign already exists with that name"}
+
+
+def test_edit_campaign_unique_constraint(client, auth_headers, campaign):
+    client.headers.update(auth_headers)
+
+    campaign_2 = {"name": "foo", "description": "bar"}
+    response = client.post("/api/v1/campaigns", json=campaign_2)
+    assert response.status_code == 201
+
+    updates = campaign
+    del updates["date_created"]
+    del updates["date_modified"]
+    campaign_id = updates.pop("id")
+    updates["name"] = "foo"
+
+    response = client.patch(f"/api/v1/campaigns/{campaign_id}", json=updates)
+    assert response.status_code == 400
+    assert response.json() == {"detail": "A campaign already exists with that name"}
+
+
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
     assert client.post("/api/v1/campaigns").status_code == 403
