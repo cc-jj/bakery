@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from src import auth, crud
 from src.dependencies import get_db
 
-
 router = APIRouter(
     prefix="/auth",
     tags=["auth"],

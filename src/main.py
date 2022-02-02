@@ -4,7 +4,6 @@ from fastapi_pagination import add_pagination
 
 from src import routes
 
-
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,

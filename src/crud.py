@@ -2,12 +2,10 @@ import re
 from datetime import date
 from typing import Optional
 
-
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 
 from src import models, schemas
-
 
 # User
 

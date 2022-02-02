@@ -4,7 +4,6 @@ from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Extra, PositiveFloat, constr, validator
 
-
 PHONE_REGEX_PATTERN = r"^\(\d{3}\) \d{3}-\d{4}$"  # (XXX) XXX-XXXX
 
 PhoneNumberStr = constr(regex=PHONE_REGEX_PATTERN)

@@ -1,8 +1,8 @@
 import json
 from datetime import datetime, timezone
 
-import pytest
 import freezegun
+import pytest
 
 from src import crud, models, schemas
 
