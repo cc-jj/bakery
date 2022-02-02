@@ -15,17 +15,19 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=schemas.Order, status_code=201)
+@router.post("", response_model=schemas.Order, status_code=201)
 def create_payment(payment: schemas.PaymentCreate, db: Session = Depends(get_db)):
     return crud.create_payment(db, payment)
 
 
-@router.patch("/", response_model=schemas.Order)
-def update_payment(payment: schemas.PaymentEdit, db: Session = Depends(get_db)):
-    return crud.update_payment(db, payment)
+@router.patch("/{payment_id}", response_model=schemas.Order)
+def update_payment(
+    payment_id: int, payment: schemas.PaymentEdit, db: Session = Depends(get_db)
+):
+    return crud.update_payment(db, payment_id, payment)
 
 
-@router.get("/", response_model=LimitOffsetPage[schemas.Payment])
+@router.get("", response_model=LimitOffsetPage[schemas.Payment])
 def get_payments(
     inclusive_start_date: Optional[str] = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),
     exclusive_end_date: Optional[str] = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),

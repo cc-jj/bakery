@@ -17,7 +17,7 @@ class LoginSchema(BaseModel):
     password: str
 
 
-@router.post("/")
+@router.post("")
 def login(schema: LoginSchema, db: Session = Depends(get_db)):
     db_user = crud.read_user(db, schema.username)
     if db_user is not None:

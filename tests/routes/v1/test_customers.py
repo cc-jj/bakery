@@ -19,7 +19,7 @@ def test_create_edit(client, auth_headers):
     }
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
-        response = client.post("/api/v1/customers/", json=payload)
+        response = client.post("/api/v1/customers", json=payload)
     assert response.status_code == 201
     customer = response.json()
     assert customer == {
@@ -33,7 +33,7 @@ def test_create_edit(client, auth_headers):
     payload = {**payload, "notes": "a new note"}
     date_modified = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_modified):
-        response = client.post("/api/v1/customers/1", json=payload)
+        response = client.patch("/api/v1/customers/1", json=payload)
     assert response.status_code == 200
     customer = response.json()
     assert customer == {
@@ -111,10 +111,10 @@ def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2
 
 def test_unauthorized(client, invalid_auth_headers):
     client.headers.update(invalid_auth_headers)
-    assert client.post("/api/v1/customers/").status_code == 403
-    assert client.post("/api/v1/customers/1").status_code == 403
+    assert client.post("/api/v1/customers").status_code == 403
+    assert client.patch("/api/v1/customers/1").status_code == 403
     assert client.get("/api/v1/customers/1").status_code == 403
-    assert client.get("/api/v1/customers/").status_code == 403
+    assert client.get("/api/v1/customers").status_code == 403
 
 
 def serialize_customer(customer: models.Customer):

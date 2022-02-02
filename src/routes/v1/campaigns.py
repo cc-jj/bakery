@@ -12,14 +12,16 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=schemas.Campaign, status_code=201)
+@router.post("", response_model=schemas.Campaign, status_code=201)
 def create_campaign(campaign: schemas.CampaignCreate, db: Session = Depends(get_db)):
     return crud.create_campaign(db, campaign)
 
 
-@router.patch("/", response_model=schemas.Campaign)
-def update_campaign(campaign: schemas.CampaignEdit, db: Session = Depends(get_db)):
-    return crud.update_campaign(db, campaign)
+@router.patch("/{campaign_id}", response_model=schemas.Campaign)
+def update_campaign(
+    campaign_id: int, campaign: schemas.CampaignEdit, db: Session = Depends(get_db)
+):
+    return crud.update_campaign(db, campaign_id, campaign)
 
 
 @router.get("/{campaign_id}", response_model=schemas.Campaign)
@@ -30,7 +32,7 @@ def get_campaign(campaign_id: int, db: Session = Depends(get_db)):
     return campaign
 
 
-@router.get("/", response_model=LimitOffsetPage[schemas.Campaign])
+@router.get("", response_model=LimitOffsetPage[schemas.Campaign])
 def get_campaigns(
     db: Session = Depends(get_db),
 ):

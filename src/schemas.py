@@ -26,10 +26,11 @@ class CustomerCreate(BaseModel):
 
 
 class CustomerEdit(CustomerCreate):
-    id: int
+    pass
 
 
 class Customer(CustomerEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
 
@@ -46,10 +47,11 @@ class MenuCategoryCreate(BaseModel):
 
 
 class MenuCategoryEdit(MenuCategoryCreate):
-    id: int
+    pass
 
 
 class MenuCategory(MenuCategoryEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
 
@@ -75,10 +77,11 @@ class MenuItemCreate(BaseModel):
 
 
 class MenuItemEdit(MenuItemCreate):
-    id: int
+    pass
 
 
 class MenuItem(MenuItemEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
     category: MenuCategory
@@ -104,10 +107,11 @@ class OrderItemCreate(OrderItemCreateNewOrder):
 
 
 class OrderItemEdit(OrderItemCreate):
-    id: int
+    pass
 
 
 class OrderItem(OrderItemEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
     menu_item: MenuItem
@@ -128,10 +132,11 @@ class CampaignCreate(BaseModel):
 
 
 class CampaignEdit(CampaignCreate):
-    id: int
+    pass
 
 
 class Campaign(CampaignEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
 
@@ -160,10 +165,11 @@ class PaymentCreate(PaymentCreateNewOrder):
 
 
 class PaymentEdit(PaymentCreate):
-    id: int
+    pass
 
 
 class Payment(PaymentEdit):
+    id: int
     date_created: datetime
     date_modified: datetime
 
@@ -172,7 +178,7 @@ class Payment(PaymentEdit):
         orm_mode = True
 
 
-class _OrderCommon(BaseModel):
+class OrderEdit(BaseModel):
     customer_id: int
     campaign_id: Optional[int]
     date_ordered: Optional[date]
@@ -185,16 +191,12 @@ class _OrderCommon(BaseModel):
         extra = Extra.forbid
 
 
-class OrderCreate(_OrderCommon):
+class OrderCreate(OrderEdit):
     order_items: List[OrderItemCreateNewOrder]
     payments: List[PaymentCreateNewOrder] = []
 
 
-class OrderEdit(_OrderCommon):
-    id: int
-
-
-class Order(_OrderCommon):
+class Order(OrderEdit):
     id: int
     date_created: datetime
     date_modified: datetime
