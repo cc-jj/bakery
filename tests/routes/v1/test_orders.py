@@ -5,8 +5,7 @@ import freezegun
 from src import models
 
 
-def test_order_items(client, auth_headers, order):
-    client.headers.update(auth_headers)
+def test_order_items(client, order):
     # create
     payload = {
         "order_id": order["id"],
@@ -64,8 +63,7 @@ def test_order_items(client, auth_headers, order):
     assert response.json() == order
 
 
-def test_orders(client, auth_headers, campaign, customer, menu_item, db):
-    client.headers.update(auth_headers)
+def test_orders(client, campaign, customer, menu_item, db):
     # create
     payload = {
         "customer_id": customer["id"],

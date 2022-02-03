@@ -7,8 +7,7 @@ import pytest
 from src import crud, models, schemas
 
 
-def test_create_edit(client, auth_headers):
-    client.headers.update(auth_headers)
+def test_create_edit(client):
 
     # create
     payload = {
@@ -45,8 +44,7 @@ def test_create_edit(client, auth_headers):
 
 
 @pytest.mark.parametrize("field", ["email", "phone"])
-def test_create_unique_constraint(client, auth_headers, customer_cj, field):
-    client.headers.update(auth_headers)
+def test_create_unique_constraint(client, customer_cj, field):
 
     payload = {"name": "foo", field: customer_cj[field]}
     response = client.post("/api/v1/customers", json=payload)
@@ -55,8 +53,7 @@ def test_create_unique_constraint(client, auth_headers, customer_cj, field):
 
 
 @pytest.mark.parametrize("field", ["email", "phone"])
-def test_edit_unique_constraint(client, auth_headers, customer_cj, customer_sarah, field):
-    client.headers.update(auth_headers)
+def test_edit_unique_constraint(client, customer_cj, customer_sarah, field):
 
     payload = customer_cj
     del payload["date_created"]
@@ -69,9 +66,7 @@ def test_edit_unique_constraint(client, auth_headers, customer_cj, customer_sara
     assert response.json() == {"detail": f"A customer already exists with that {field}"}
 
 
-def test_get(client, auth_headers, customer_cj, customer_sarah, customer_sarah_2):
-
-    client.headers.update(auth_headers)
+def test_get(client, customer_cj, customer_sarah, customer_sarah_2):
 
     # get by id
     response = client.get(f'/api/v1/customers/{customer_cj["id"]}')

@@ -3,8 +3,7 @@ from datetime import datetime, timezone
 import freezegun
 
 
-def test_campaigns(client, auth_headers):
-    client.headers.update(auth_headers)
+def test_campaigns(client):
     # create
     payload = {
         "name": "Open Porch",
@@ -54,8 +53,7 @@ def test_campaigns(client, auth_headers):
     }
 
 
-def test_create_campaign_unique_constraint(client, auth_headers, campaign):
-    client.headers.update(auth_headers)
+def test_create_campaign_unique_constraint(client, campaign):
 
     payload = {"name": campaign["name"], "description": "foo"}
     response = client.post("/api/v1/campaigns", json=payload)
@@ -63,8 +61,7 @@ def test_create_campaign_unique_constraint(client, auth_headers, campaign):
     assert response.json() == {"detail": "A campaign already exists with that name"}
 
 
-def test_edit_campaign_unique_constraint(client, auth_headers, campaign):
-    client.headers.update(auth_headers)
+def test_edit_campaign_unique_constraint(client, campaign):
 
     campaign_2 = {"name": "foo", "description": "bar"}
     response = client.post("/api/v1/campaigns", json=campaign_2)

@@ -34,17 +34,6 @@ def db(db_engine):
 
 
 @pytest.fixture
-def client(db):
-    app.dependency_overrides[get_db] = lambda: db
-    with TestClient(app) as client:
-        yield client
-
-
-def serialize_model(model: Base, schema_cls: Type[pydantic.BaseModel]):
-    return json.loads(schema_cls.from_orm(model).json())
-
-
-@pytest.fixture
 def user(db):
     db_user = models.User(name="cj", hashed_password=auth.pwd_context.hash("hunter123"))
     db.add(db_user)
@@ -62,6 +51,18 @@ def auth_headers(db, user):
 def invalid_auth_headers():
     token = auth.create_access_token("not-a-user")
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def client(db, auth_headers):
+    app.dependency_overrides[get_db] = lambda: db
+    with TestClient(app) as client:
+        client.headers.update(auth_headers)
+        yield client
+
+
+def serialize_model(model: Base, schema_cls: Type[pydantic.BaseModel]):
+    return json.loads(schema_cls.from_orm(model).json())
 
 
 @pytest.fixture

@@ -3,8 +3,7 @@ from datetime import datetime, timezone
 import freezegun
 
 
-def test_payments(client, auth_headers, order):
-    client.headers.update(auth_headers)
+def test_payments(client, order):
 
     # create
     payload = {
