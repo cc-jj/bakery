@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi_pagination import LimitOffsetPage
@@ -16,6 +16,8 @@ router = APIRouter(
 
 @router.post("/items", response_model=schemas.Order, status_code=201)
 def create_order_item(order_item: schemas.OrderItemCreate, db: Session = Depends(get_db)):
+    if crud.read_order(db, order_item.order_id) is None:
+        raise HTTPException(404, f"Order {order_item.order_id} does not exist")
     return crud.create_order_item(db, order_item)
 
 
@@ -23,6 +25,8 @@ def create_order_item(order_item: schemas.OrderItemCreate, db: Session = Depends
 def update_order_item(
     order_item_id: int, order_item: schemas.OrderItemEdit, db: Session = Depends(get_db)
 ):
+    if crud.read_order_item(db, order_item_id) is None:
+        raise HTTPException(404, f"OrderItem {order_item_id} does not exist")
     return crud.update_order_item(db, order_item_id, order_item)
 
 
@@ -38,6 +42,9 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
 
 @router.get("/{order_id}", response_model=schemas.Order)
 def get_order(order_id: int, db: Session = Depends(get_db)):
+    order_item = crud.read_order(db, order_id)
+    if order_item is None:
+        raise HTTPException(404, f"Order {order_id} does not exist")
     return crud.read_order(db, order_id)
 
 
@@ -50,6 +57,8 @@ def get_orders(completed: bool, db: Session = Depends(get_db)):
 
 @router.patch("/{order_id}", response_model=schemas.Order)
 def update_order(order_id: int, order: schemas.OrderEdit, db: Session = Depends(get_db)):
+    if crud.read_order(db, order_id) is None:
+        raise HTTPException(404, f"Order {order_id} not found")
     return crud.update_order(db, order_id, order)
 
 

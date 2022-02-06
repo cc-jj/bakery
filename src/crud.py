@@ -218,6 +218,10 @@ def create_payment(db: Session, payment: schemas.PaymentCreate) -> models.Order:
     return db_payment.order
 
 
+def read_payment(db: Session, payment_id: int) -> Optional[models.Payment]:
+    return db.query(models.Payment).filter(models.Payment.id == payment_id).first()
+
+
 def read_payments(
     db: Session,
     inclusive_start_date: Optional[date],
@@ -256,6 +260,10 @@ def delete_payment(db: Session, payment_id: int) -> models.Order:
 
 
 # OrderItem
+
+
+def read_order_item(db: Session, order_item_id: int) -> Optional[models.OrderItem]:
+    return db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
 
 
 def create_order_item(db: Session, order_item: schemas.OrderItemCreate) -> models.Order:

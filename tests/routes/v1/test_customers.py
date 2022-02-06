@@ -83,6 +83,16 @@ def test_get(client, customer_cj, customer_sarah, customer_sarah_2):
         "items": [customer_cj, customer_sarah, customer_sarah_2],
     }
 
+    # get page
+    response = client.get("/api/v1/customers?offset=1&limit=1")
+    assert response.status_code == 200
+    assert response.json() == {
+        "total": 3,
+        "limit": 1,
+        "offset": 1,
+        "items": [customer_sarah],
+    }
+
     # get by name
     response = client.get("/api/v1/customers?name=sarah")
     assert response.status_code == 200

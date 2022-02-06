@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_pagination import LimitOffsetPage
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.orm import Session
@@ -17,11 +17,17 @@ router = APIRouter(
 
 @router.post("", response_model=schemas.Order, status_code=201)
 def create_payment(payment: schemas.PaymentCreate, db: Session = Depends(get_db)):
+    if crud.read_order(db, payment.order_id) is None:
+        raise HTTPException(404, f"Order {payment.order_id} does not exist")
     return crud.create_payment(db, payment)
 
 
 @router.patch("/{payment_id}", response_model=schemas.Order)
 def update_payment(payment_id: int, payment: schemas.PaymentEdit, db: Session = Depends(get_db)):
+    if crud.read_order(db, payment.order_id) is None:
+        raise HTTPException(404, f"Order {payment.order_id} does not exist")
+    if crud.read_payment(db, payment_id) is None:
+        raise HTTPException(4040, f"Payment {payment_id} does not exist")
     return crud.update_payment(db, payment_id, payment)
 
 

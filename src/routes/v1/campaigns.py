@@ -28,7 +28,7 @@ def update_campaign(
 def get_campaign(campaign_id: int, db: Session = Depends(get_db)):
     campaign = crud.read_campaign(db, campaign_id)
     if campaign is None:
-        raise HTTPException(404, "Campaign not found")
+        raise HTTPException(404, f"Campaign {campaign_id} not found")
     return campaign
 
 

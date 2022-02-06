@@ -23,6 +23,8 @@ def update_menu_category(
     menu_category: schemas.MenuCategoryEdit,
     db: Session = Depends(get_db),
 ):
+    if crud.read_menu_category(db, category_id) is None:
+        raise HTTPException(404, f"MenuCategory {category_id} does not exist")
     return crud.update_menu_category(db, category_id, menu_category)
 
 
@@ -30,7 +32,7 @@ def update_menu_category(
 def get_menu_category(category_id: int, db: Session = Depends(get_db)):
     menu_category = crud.read_menu_category(db, category_id)
     if menu_category is None:
-        raise HTTPException(404, "Customer not found")
+        raise HTTPException(404, f"MenuCategory {category_id} not found")
     return menu_category
 
 
@@ -42,8 +44,10 @@ def get_menu_categories(db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=schemas.MenuItem, status_code=201)
-def create_menu_item(category: schemas.MenuItemCreate, db: Session = Depends(get_db)):
-    return crud.create_menu_item(db, category)
+def create_menu_item(menu_item: schemas.MenuItemCreate, db: Session = Depends(get_db)):
+    if crud.read_menu_category(db, menu_item.category_id) is None:
+        raise HTTPException(404, f"MenuCategory {menu_item.category_id} not found")
+    return crud.create_menu_item(db, menu_item)
 
 
 @router.get("", response_model=LimitOffsetPage[schemas.MenuItem])
@@ -57,6 +61,8 @@ def get_menu(category_id: int = None, db: Session = Depends(get_db)):
 def update_menu_item(
     menu_item_id: int, menu_item: schemas.MenuItemEdit, db: Session = Depends(get_db)
 ):
+    if crud.read_menu_category(db, menu_item.category_id) is None:
+        raise HTTPException(404, f"MenuCategory {menu_item.category_id} does not exist")
     return crud.update_menu_item(db, menu_item_id, menu_item)
 
 
@@ -64,5 +70,5 @@ def update_menu_item(
 def get_menu_item(menu_item_id: int, db: Session = Depends(get_db)):
     menu_item = crud.read_menu_item(db, menu_item_id)
     if menu_item is None:
-        raise HTTPException(404, "Customer not found")
+        raise HTTPException(404, f"MenuItem {menu_item_id} does not exist")
     return menu_item

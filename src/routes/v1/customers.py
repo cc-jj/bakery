@@ -28,7 +28,7 @@ def update_customer(
 def get_customer(customer_id: int, db: Session = Depends(get_db)):
     customer = crud.read_customer(db, customer_id)
     if customer is None:
-        raise HTTPException(404, "Customer not found")
+        raise HTTPException(404, f"Customer {customer_id} not found")
     return customer
 
 
