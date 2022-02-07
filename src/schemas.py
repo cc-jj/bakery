@@ -40,6 +40,7 @@ class Customer(CustomerEdit):
 
 class MenuCategoryCreate(BaseModel):
     name: str
+    description: Optional[str]
 
     class Config:
         extra = Extra.forbid

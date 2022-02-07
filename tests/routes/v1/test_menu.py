@@ -6,9 +6,7 @@ import freezegun
 def test_categories(client):
 
     # create
-    payload = {
-        "name": "Cocoa Bomb",
-    }
+    payload = {"name": "Cocoa Bomb", "description": "Chocolate milk bomb"}
     date_created = datetime.now(timezone.utc)
     with freezegun.freeze_time(date_created):
         response = client.post("/api/v1/menu/categories", json=payload)

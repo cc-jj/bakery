@@ -77,6 +77,7 @@ class MenuCategory(Base):
     date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
     date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     name = Column(String, unique=True, nullable=False)
+    description = Column(String)
 
     menu_items = relationship("MenuItem", back_populates="category")
 

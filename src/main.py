@@ -49,6 +49,7 @@ app.add_middleware(
     allow_origins=["http://localhost:8080"],
     allow_methods=["*"],
     allow_headers=["Authorization"],
+    allow_credentials=True,
 )
 app.include_router(routes.auth.router, prefix="/api")
 app.include_router(routes.v1.router, prefix="/api")
