@@ -2,12 +2,13 @@ import logging
 import sys
 import traceback
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_pagination import add_pagination
+from sqlalchemy.exc import IntegrityError
 
-from src import routes, settings
+from src import crud, routes, settings
 
 logger = logging.getLogger("bakery")
 
@@ -20,6 +21,13 @@ def startup():
     if logger.isEnabledFor(logging.INFO):
         pretty_settings = (f"{k.lower():<25} {v}" for k, v in sorted(settings.dump().items()))
         logger.info("Settings\n%s", "\n".join(pretty_settings))
+
+
+@app.exception_handler(IntegrityError)
+def handle_integrity_error(request: Request, exc: IntegrityError):
+    """Convert DB UniqueConstraint failures to 400 BadRequest failures"""
+    if error_msg := crud.create_unique_constrain_error_msg(exc):
+        return JSONResponse({"detail": error_msg}, 400)
 
 
 async def catch_exceptions_middleware(request: Request, call_next):
