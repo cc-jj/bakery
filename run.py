@@ -37,7 +37,8 @@ def launch(env_file):
     if env_file:
         load_env(env_file)
     correct_cwd()
-    uvicorn.run('src.main:app', host='localhost', port=3000)
+    from src.settings import ENV, PORT
+    uvicorn.run('src.main:app', host='localhost', port=PORT, debug=ENV == 'dev')
 
 
 app.add_command(launch)
