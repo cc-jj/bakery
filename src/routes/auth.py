@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -16,11 +16,19 @@ class LoginSchema(BaseModel):
     password: str
 
 
-@router.post("")
-def login(schema: LoginSchema, db: Session = Depends(get_db)):
+@router.post("/login")
+def login(schema: LoginSchema, response: Response, db: Session = Depends(get_db)):
     db_user = crud.read_user(db, schema.username)
     if db_user is not None:
         if auth.verify_password(schema.password, db_user.hashed_password):
-            token = auth.create_access_token(schema.username)
-            return {"user": {"name": db_user.name}, "token": token}
+            auth.set_cookie(response, db_user.name)
+            response.status_code = 200
+            return response
     raise HTTPException(400, "Username or password is incorrect")
+
+
+@router.get("/logout")
+def logout(response: Response):
+    auth.remove_cookie(response)
+    response.status_code = 200
+    return response

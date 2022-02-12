@@ -139,8 +139,8 @@ def test_get(client, customer_cj, customer_sarah, customer_sarah_2):
         }
 
 
-def test_unauthorized(client, invalid_auth_headers):
-    client.headers.update(invalid_auth_headers)
+def test_unauthorized(client):
+    client.get("/api/auth/logout")
     assert client.post("/api/v1/customers").status_code == 403
     assert client.patch("/api/v1/customers/1").status_code == 403
     assert client.get("/api/v1/customers/1").status_code == 403

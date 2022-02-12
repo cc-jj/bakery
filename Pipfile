@@ -7,8 +7,8 @@ name = "pypi"
 fastapi = "~=0.70"
 uvicorn = "~=0.16"
 alembic = "~=1.7"
-passlib = "~=1.7"
-python-jose = "~=3.3"
+pyjwt = "*"
+passlib = "*"
 
 [dev-packages]
 Faker = "*"

@@ -1,8 +1,7 @@
 import os
 
-JWT_SECRET = os.environ["JWT_SECRET"]
-JWT_ALGO = "HS256"
-JWT_TIMEOUT_MINUTES = int(os.getenv("JWT_TIMEOUT_MINUTES", 60))
+COOKIE_SECRET = os.environ["COOKIE_SECRET"]
+COOKIE_MAX_AGE_MINUTES = int(os.environ["COOKIE_MAX_AGE_MINUTES"])
 
 PORT = 8000
 
@@ -15,5 +14,5 @@ def dump():
     return {
         "ENV": ENV,
         "PORT": PORT,
-        "JWT_TIMEOUT_MINUTES": JWT_TIMEOUT_MINUTES,
+        "COOKIE_MAX_AGE_MINUTES": COOKIE_MAX_AGE_MINUTES,
     }

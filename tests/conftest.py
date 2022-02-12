@@ -42,22 +42,10 @@ def user(db):
 
 
 @pytest.fixture
-def auth_headers(db, user):
-    token = auth.create_access_token("cj")
-    return {"Authorization": f"Bearer {token}"}
-
-
-@pytest.fixture
-def invalid_auth_headers():
-    token = auth.create_access_token("not-a-user")
-    return {"Authorization": f"Bearer {token}"}
-
-
-@pytest.fixture
-def client(db, auth_headers):
+def client(db, user):
     app.dependency_overrides[get_db] = lambda: db
     with TestClient(app) as client:
-        client.headers.update(auth_headers)
+        client.post("/api/auth/login", json={"username": "cj", "password": "hunter123"})
         yield client
 
 

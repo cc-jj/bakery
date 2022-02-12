@@ -2,7 +2,7 @@ import logging
 import sys
 import traceback
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_pagination import add_pagination
@@ -18,6 +18,8 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     logging.basicConfig(level=logging.INFO)
+    if settings.ENV == "dev":
+        logger.setLevel(logging.DEBUG)
     if logger.isEnabledFor(logging.INFO):
         pretty_settings = (f"{k.lower():<25} {v}" for k, v in sorted(settings.dump().items()))
         logger.info("Settings\n%s", "\n".join(pretty_settings))
@@ -52,9 +54,8 @@ app.middleware("http")(catch_exceptions_middleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://local.bakery.com:3000"],
     allow_methods=["*"],
-    allow_headers=["Authorization"],
     allow_credentials=True,
 )
 app.include_router(routes.auth.router, prefix="/api")

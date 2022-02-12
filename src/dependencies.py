@@ -1,7 +1,6 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError
+from fastapi import Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_403_FORBIDDEN
 
 from src import auth, crud, database, models
 
@@ -14,21 +13,12 @@ def get_db():
         db.close()
 
 
-_http_bearer = HTTPBearer()
-
-
 def get_authorized_user(
-    creds: HTTPAuthorizationCredentials = Depends(_http_bearer),
+    request: Request,
     db: Session = Depends(get_db),
 ) -> models.User:
-    try:
-        username = auth.decode_username(creds.credentials)
-    except JWTError:
-        raise HTTPException(403, "Credentials invalid or expired")
-
-    if username is not None:
-        user = crud.read_user(db, username)
-        if user is not None:
-            return user
-
-    raise HTTPException(403, "Could not validate credentials")
+    session = auth.verify_cookie(request)
+    user = crud.read_user(db, session["username"])
+    if user is None:
+        raise HTTPException(HTTP_403_FORBIDDEN, "Could not validate credentials")
+    return user

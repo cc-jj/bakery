@@ -78,8 +78,8 @@ def test_edit_campaign_unique_constraint(client, campaign):
     assert response.json() == {"detail": "A campaign already exists with that name"}
 
 
-def test_unauthorized(client, invalid_auth_headers):
-    client.headers.update(invalid_auth_headers)
+def test_unauthorized(client):
+    client.get("/api/auth/logout")
     assert client.post("/api/v1/campaigns").status_code == 403
     assert client.patch("/api/v1/campaigns/1").status_code == 403
     assert client.get("/api/v1/campaigns/1").status_code == 403

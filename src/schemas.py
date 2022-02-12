@@ -9,6 +9,11 @@ PHONE_REGEX_PATTERN = r"^\(\d{3}\) \d{3}-\d{4}$"  # (XXX) XXX-XXXX
 PhoneNumberStr = constr(regex=PHONE_REGEX_PATTERN)
 
 
+class User(BaseModel):
+    id: int
+    name: str
+
+
 class CustomerCreate(BaseModel):
     name: str
     email: Optional[EmailStr]

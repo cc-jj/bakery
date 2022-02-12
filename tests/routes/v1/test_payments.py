@@ -57,8 +57,8 @@ def test_payments(client, order):
     assert order_without_payment == order
 
 
-def test_unauthorized(client, invalid_auth_headers):
-    client.headers.update(invalid_auth_headers)
+def test_unauthorized(client):
+    client.get("/api/auth/logout")
     assert client.post("/api/v1/payments").status_code == 403
     assert client.patch("/api/v1/payments/1").status_code == 403
     assert client.get("/api/v1/payments").status_code == 403
