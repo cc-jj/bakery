@@ -43,20 +43,33 @@ def read_customer(db: Session, customer_id: int) -> Optional[models.Customer]:
     return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
 
 
-def read_customers(db: Session, name: Optional[str], email: Optional[str], phone: Optional[str]):
+def read_customers(
+    db: Session,
+    name: Optional[str],
+    email: Optional[str],
+    phone: Optional[str],
+    order_by: str,
+    descending: bool,
+):
     query = db.query(models.Customer)
     if name is not None:
-        if name.strip() == "":
-            raise HTTPException(400, "Invalid name")
         query = query.filter(models.Customer.name.startswith(name.lower()))
     if email is not None:
-        if email.strip() == "":
-            raise HTTPException(400, "Invalid email")
-        query = query.filter(models.Customer.email == email)
+        query = query.filter(models.Customer.email.startswith(email.lower()))
     if phone is not None:
-        if phone.strip() == "" or re.match(schemas.PHONE_REGEX_PATTERN, phone) is None:
-            raise HTTPException(400, "Invalid phone")
-        query = query.filter(models.Customer.phone == phone)
+        query = query.filter(models.Customer.phone.startswith(phone.lower()))
+
+    if order_by == "name":
+        order_by_field = models.Customer.name
+    elif order_by == "email":
+        order_by_field = models.Customer.email
+    elif order_by == "phone":
+        order_by_field = models.Customer.phone
+    else:
+        raise ValueError(order_by)
+    if descending:
+        order_by_field = order_by_field.desc()
+    query = query.order_by(order_by_field)
     return query
 
 

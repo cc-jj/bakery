@@ -37,8 +37,11 @@ def get_customers(
     name: str = None,
     email: str = None,
     phone: str = None,
+    orderBy: str = "name",
+    descending: str = None,
     db: Session = Depends(get_db),
 ):
-    # TODO order by
-    query = crud.read_customers(db, name, email, phone)
+    if orderBy and orderBy not in {"name", "email", "phone"}:
+        raise HTTPException(400, "orderby must be one of name, email, phone")
+    query = crud.read_customers(db, name, email, phone, orderBy, descending is not None)
     return paginate(query)
