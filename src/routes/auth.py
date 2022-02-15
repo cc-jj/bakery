@@ -22,7 +22,7 @@ def login(schema: LoginSchema, response: Response, db: Session = Depends(get_db)
     if db_user is not None:
         if auth.verify_password(schema.password, db_user.hashed_password):
             auth.set_cookie(response, db_user.name)
-            response.status_code = 200
+            response.status_code = 204
             return response
     raise HTTPException(400, "Username or password is incorrect")
 
@@ -30,5 +30,5 @@ def login(schema: LoginSchema, response: Response, db: Session = Depends(get_db)
 @router.get("/logout")
 def logout(response: Response):
     auth.remove_cookie(response)
-    response.status_code = 200
+    response.status_code = 204
     return response
