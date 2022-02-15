@@ -47,7 +47,6 @@ def verify_cookie(request: Request) -> dict:
 
 
 def create_token(username: str, created_at: datetime, expires_at: datetime) -> str:
-    logger.debug("create_token")
     payload = {
         "sub": username,
         "iat": created_at,
@@ -57,7 +56,6 @@ def create_token(username: str, created_at: datetime, expires_at: datetime) -> s
 
 
 def decode_token(token: str) -> dict:
-    logger.debug("decode_token")
     payload = jwt.decode(
         token,
         settings.COOKIE_SECRET,
