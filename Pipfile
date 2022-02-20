@@ -9,6 +9,7 @@ uvicorn = "~=0.16"
 alembic = "~=1.7"
 pyjwt = "*"
 passlib = "*"
+sqlalchemy = "~=1.4"
 
 [dev-packages]
 Faker = "*"

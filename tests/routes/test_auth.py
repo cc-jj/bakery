@@ -10,7 +10,7 @@ def test_login_logout(client):
     assert session["username"] == "cj"
 
     response = client.get("/api/auth/logout")
-    assert response.status_code == 200
+    assert response.status_code == 204
     assert response.cookies.get("token") is None
 
     response = client.post(
