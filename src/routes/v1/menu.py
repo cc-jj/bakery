@@ -52,7 +52,10 @@ def create_menu_item(menu_item: schemas.MenuItemCreate, db: Session = Depends(ge
 
 @router.get("", response_model=LimitOffsetPage[schemas.MenuItem])
 def get_menu(
-    category_id: int = None, name: str = None, descending: str = None, db: Session = Depends(get_db)
+    category_id: int,
+    name: str | None = None,
+    descending: str | None = None,
+    db: Session = Depends(get_db),
 ):
     # TODO order by
     query = crud.read_menu_items(db, category_id, name, descending is not None)

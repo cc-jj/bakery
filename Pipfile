@@ -13,6 +13,7 @@ httpx = "*"
 pydantic = {extras = [ "email",], version = "~=1.8"}
 fastapi-pagination = {extras = [ "sqlalchemy",], version = "~=0.9"}
 passlib = {extras = [ "bcrypt",], version = ""}
+mypy = "*"
 
 [dev-packages]
 Faker = "*"
@@ -23,6 +24,7 @@ freezegun = "*"
 requests = "*"
 click = "*"
 isort = "*"
+types-passlib = "*"
 
 [requires]
 python_version = "3.11"

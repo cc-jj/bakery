@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Optional
+from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_pagination import LimitOffsetPage
@@ -13,6 +12,12 @@ router = APIRouter(
     prefix="/payments",
     tags=["payments"],
 )
+
+
+def _parse_date(value: str | None) -> date | None:
+    if value is None:
+        return None
+    return datetime.strptime(value, "%Y-%m-%d").date()
 
 
 @router.post("", response_model=schemas.Order, status_code=201)
@@ -38,11 +43,11 @@ def get_payments(
     db: Session = Depends(get_db),
 ):
     # TODO order by
-    if inclusive_start_date is not None:
-        inclusive_start_date = datetime.strptime(inclusive_start_date, "%Y-%m-%d")
-    if exclusive_end_date is not None:
-        exclusive_end_date = datetime.strptime(exclusive_end_date, "%Y-%m-%d")
-    query = crud.read_payments(db, inclusive_start_date, exclusive_end_date)
+    query = crud.read_payments(
+        db,
+        _parse_date(inclusive_start_date),
+        _parse_date(exclusive_end_date),
+    )
     return paginate(query)
 
 

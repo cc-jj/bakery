@@ -11,7 +11,7 @@ from sqlalchemy import (
     String,
     TypeDecorator,
 )
-from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 
 
 def utcnow() -> datetime:
@@ -51,7 +51,7 @@ class Customer(Base):
     phone = Column(String, unique=True, index=True)
     notes = Column(String)
 
-    orders = relationship("Order", back_populates="customer")
+    orders: Mapped[list["Order"]] = relationship("Order", back_populates="customer")
 
 
 class MenuItem(Base):
@@ -62,8 +62,8 @@ class MenuItem(Base):
     price = Column(Float, nullable=False)
     price_units = Column(String)  # $10 / dozen <-- dozen is the unit
 
-    order_items = relationship("OrderItem", back_populates="menu_item")
-    category = relationship("MenuCategory", back_populates="menu_items")
+    order_items: Mapped[list["OrderItem"]] = relationship("OrderItem", back_populates="menu_item")
+    category: Mapped["MenuCategory"] = relationship("MenuCategory", back_populates="menu_items")
 
 
 class MenuCategory(Base):
@@ -71,7 +71,7 @@ class MenuCategory(Base):
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
 
-    menu_items = relationship("MenuItem", back_populates="category")
+    menu_items: Mapped[list[MenuItem]] = relationship("MenuItem", back_populates="category")
 
 
 class OrderItem(Base):
@@ -83,8 +83,8 @@ class OrderItem(Base):
     charged_price = Column(Float, nullable=False)
     notes = Column(String)
 
-    order = relationship("Order", back_populates="order_items")
-    menu_item = relationship("MenuItem", back_populates="order_items")
+    order: Mapped["Order"] = relationship("Order", back_populates="order_items")
+    menu_item: Mapped[MenuItem] = relationship("MenuItem", back_populates="order_items")
 
 
 class Order(Base):
@@ -97,10 +97,10 @@ class Order(Base):
     notes = Column(String)
     completed = Column(Boolean, default=False)
 
-    campaign = relationship("Campaign", back_populates="orders")
-    customer = relationship("Customer", back_populates="orders")
-    order_items = relationship("OrderItem", back_populates="order")
-    payments = relationship("Payment", back_populates="order")
+    campaign: Mapped["Campaign" | None] = relationship("Campaign", back_populates="orders")
+    customer: Mapped[Customer] = relationship("Customer", back_populates="orders")
+    order_items: Mapped[list[OrderItem]] = relationship("OrderItem", back_populates="order")
+    payments: Mapped[list["Payment"]] = relationship("Payment", back_populates="order")
 
 
 class Campaign(Base):
@@ -112,7 +112,7 @@ class Campaign(Base):
     date_start = Column(Date)
     date_end = Column(Date)
 
-    orders = relationship("Order", back_populates="campaign")
+    orders: Mapped[list[Order]] = relationship("Order", back_populates="campaign")
 
 
 class Payment(Base):
@@ -122,4 +122,4 @@ class Payment(Base):
     method = Column(String, nullable=False)  # cash, paypal, zelle
     date = Column(Date, nullable=False)
 
-    order = relationship("Order", back_populates="payments")
+    order: Mapped[Order] = relationship("Order", back_populates="payments")

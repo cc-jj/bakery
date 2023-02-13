@@ -20,8 +20,8 @@ class LoginSchema(BaseModel):
 def login(schema: LoginSchema, response: Response, db: Session = Depends(get_db)):
     db_user = crud.read_user(db, schema.username)
     if db_user is not None:
-        if auth.verify_password(schema.password, db_user.hashed_password):
-            auth.set_cookie(response, db_user.name)
+        if auth.verify_password(schema.password, str(db_user.hashed_password)):
+            auth.set_cookie(response, str(db_user.name))
             return schemas.User(id=db_user.id, name=db_user.name)
     raise HTTPException(400, "Username or password is incorrect")
 

@@ -41,7 +41,7 @@ async def catch_exceptions_middleware(request: Request, call_next):
         return await call_next(request)
     except Exception:
         logger.exception("Unhandled exception")
-        content = {"detail": "Internal server error"}
+        content: dict[str, str | list[str]] = {"detail": "Internal server error"}
         if settings.ENV == "dev":
             exc_type, exc_value, exc_traceback = sys.exc_info()
             tb = traceback.format_exception(exc_type, exc_value, exc_traceback, limit=25)

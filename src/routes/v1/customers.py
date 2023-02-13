@@ -34,11 +34,11 @@ def get_customer(customer_id: int, db: Session = Depends(get_db)):
 
 @router.get("", response_model=LimitOffsetPage[schemas.Customer])
 def get_customers(
-    name: str = None,
-    email: str = None,
-    phone: str = None,
+    name: str | None = None,
+    email: str | None = None,
+    phone: str | None = None,
     orderBy: str = "name",
-    descending: str = None,
+    descending: str | None = None,
     db: Session = Depends(get_db),
 ):
     if orderBy and orderBy not in {"name", "email", "phone"}:

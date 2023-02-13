@@ -1,11 +1,18 @@
 import enum
 from datetime import date, datetime
 
-from pydantic import BaseModel, EmailStr, Extra, PositiveFloat, constr, validator
+from pydantic import (
+    BaseModel,
+    ConstrainedStr,
+    EmailStr,
+    Extra,
+    PositiveFloat,
+    validator,
+)
 
-PHONE_REGEX_PATTERN = r"^\(\d{3}\) \d{3}-\d{4}$"  # (XXX) XXX-XXXX
 
-PhoneNumberStr = constr(regex=PHONE_REGEX_PATTERN)
+class PhoneNumberStr(ConstrainedStr):
+    regex = r"^\(\d{3}\) \d{3}-\d{4}$"  # (XXX) XXX-XXXX
 
 
 class User(BaseModel):

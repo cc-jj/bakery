@@ -3,14 +3,16 @@ from datetime import date
 
 from fastapi.exceptions import HTTPException
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Query, Session
 
 from src import models, schemas
 
 
 def create_unique_constrain_error_msg(exc: IntegrityError) -> str | None:
     pattern = r"^UNIQUE constraint failed: ([a-z_]+)\.([a-z_]+)$"
-    for arg in exc.orig.args:
+    args = exc.orig and exc.orig.args
+    args = args or tuple()
+    for arg in args:
         assert isinstance(arg, str)
         match = re.match(pattern, arg)
         if match:
@@ -49,7 +51,7 @@ def read_customers(
     phone: str | None,
     order_by: str,
     descending: bool,
-):
+) -> Query[models.Customer]:
     query = db.query(models.Customer)
     if name is not None:
         query = query.filter(models.Customer.name.startswith(name.lower()))
@@ -67,9 +69,8 @@ def read_customers(
     else:
         raise ValueError(order_by)
     if descending:
-        order_by_field = order_by_field.desc()
-    query = query.order_by(order_by_field)
-    return query
+        return query.order_by(order_by_field.desc())
+    return query.order_by(order_by_field)
 
 
 def update_customer(
@@ -132,17 +133,16 @@ def read_menu_item(db: Session, menu_item_id: int) -> models.MenuItem | None:
     return db.query(models.MenuItem).filter(models.MenuItem.id == menu_item_id).first()
 
 
-def read_menu_items(db: Session, category_id: int, name: str | None, descending: bool):
+def read_menu_items(
+    db: Session, category_id: int, name: str | None, descending: bool
+) -> Query[models.MenuItem]:
     query = db.query(models.MenuItem)
     if category_id is not None:
         query = query.filter(models.MenuItem.category_id == category_id)
     if name is not None:
         query = query.filter(models.MenuItem.name.startswith(name))
-    order_by = models.MenuItem.name
-    if descending:
-        order_by = order_by.desc()
-    query = query.order_by(order_by)
-    return query
+    order_by = models.MenuItem.name.desc() if descending else models.MenuCategory.name
+    return query.order_by(order_by)
 
 
 def update_menu_item(
@@ -172,7 +172,7 @@ def read_campaign(db: Session, campaign_id: int) -> models.Campaign | None:
     return db.query(models.Campaign).filter(models.Campaign.id == campaign_id).first()
 
 
-def read_campaigns(db: Session):
+def read_campaigns(db: Session) -> Query[models.Campaign]:
     return db.query(models.Campaign)
 
 
@@ -207,7 +207,7 @@ def read_payments(
     db: Session,
     inclusive_start_date: date | None,
     exclusive_end_date: date | None,
-):
+) -> Query[models.Payment]:
     query = db.query(models.Payment)
     if inclusive_start_date is not None:
         query = query.filter(models.Payment.date >= inclusive_start_date)
@@ -237,14 +237,14 @@ def delete_payment(db: Session, payment_id: int) -> models.Order:
         raise HTTPException(404, "Payment not found")
     db.delete(db_payment)
     db.commit()
-    return db.query(models.Order).filter(models.Order.id == db_payment.order_id).first()
+    return db.query(models.Order).filter(models.Order.id == db_payment.order_id).one()
 
 
 # OrderItem
 
 
 def read_order_item(db: Session, order_item_id: int) -> models.OrderItem | None:
-    return db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
+    return db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).one_or_none()
 
 
 def create_order_item(db: Session, order_item: schemas.OrderItemCreate) -> models.Order:
@@ -276,7 +276,7 @@ def delete_order_item(db: Session, order_item_id: int) -> models.Order:
         raise HTTPException(404, detail="Order item not found")
     db.delete(db_order_item)
     db.commit()
-    return db.query(models.Order).filter(models.Order.id == db_order_item.order_id).first()
+    return db.query(models.Order).filter(models.Order.id == db_order_item.order_id).one()
 
 
 # Order
@@ -306,7 +306,7 @@ def read_order(db: Session, order_id: int) -> models.Order | None:
     return db.query(models.Order).filter(models.Order.id == order_id).first()
 
 
-def read_orders(db: Session, completed: bool):
+def read_orders(db: Session, completed: bool) -> Query[models.Order]:
     return db.query(models.Order).filter(models.Order.completed == completed)
 
 
