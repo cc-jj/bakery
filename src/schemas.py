@@ -1,6 +1,5 @@
 import enum
 from datetime import date, datetime
-from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Extra, PositiveFloat, constr, validator
 
@@ -16,9 +15,9 @@ class User(BaseModel):
 
 class CustomerCreate(BaseModel):
     name: str
-    email: Optional[EmailStr]
-    phone: Optional[PhoneNumberStr]
-    notes: Optional[str]
+    email: EmailStr | None
+    phone: PhoneNumberStr | None
+    notes: str | None
 
     @validator("name")
     def normalize_name(cls, v):
@@ -45,7 +44,7 @@ class Customer(CustomerEdit):
 
 class MenuCategoryCreate(BaseModel):
     name: str
-    description: Optional[str]
+    description: str | None
 
     class Config:
         extra = Extra.forbid
@@ -73,7 +72,7 @@ class PriceUnits(str, enum.Enum):
 class MenuItemCreate(BaseModel):
     name: str
     category_id: int
-    description: Optional[str]
+    description: str | None
     price: PositiveFloat
     price_units: PriceUnits
 
@@ -101,7 +100,7 @@ class OrderItemCreateNewOrder(BaseModel):
     quantity: int
     menu_price: PositiveFloat
     charged_price: PositiveFloat
-    notes: Optional[str]
+    notes: str | None
 
     class Config:
         extra = Extra.forbid
@@ -129,8 +128,8 @@ class OrderItem(OrderItemEdit):
 class CampaignCreate(BaseModel):
     name: str
     description: str
-    date_start: Optional[date]
-    date_end: Optional[date]
+    date_start: date | None
+    date_end: date | None
 
     class Config:
         extra = Extra.forbid
@@ -185,11 +184,11 @@ class Payment(PaymentEdit):
 
 class OrderEdit(BaseModel):
     customer_id: int
-    campaign_id: Optional[int]
-    date_ordered: Optional[date]
-    date_delivered: Optional[date]
+    campaign_id: int | None
+    date_ordered: date | None
+    date_delivered: date | None
     price_adjustment: float = 0.0
-    notes: Optional[str]
+    notes: str | None
     completed: bool = False
 
     class Config:
@@ -197,8 +196,8 @@ class OrderEdit(BaseModel):
 
 
 class OrderCreate(OrderEdit):
-    order_items: List[OrderItemCreateNewOrder]
-    payments: List[PaymentCreateNewOrder] = []
+    order_items: list[OrderItemCreateNewOrder]
+    payments: list[PaymentCreateNewOrder] = []
 
 
 class Order(OrderEdit):
@@ -206,12 +205,12 @@ class Order(OrderEdit):
     date_created: datetime
     date_modified: datetime
     price_adjustment: float
-    notes: Optional[str]
+    notes: str | None
     completed: bool
     customer: Customer
-    campaign: Optional[Campaign]
-    order_items: List[OrderItem]
-    payments: List[Payment]
+    campaign: Campaign | None
+    order_items: list[OrderItem]
+    payments: list[Payment]
 
     class Config:
         extra = Extra.forbid

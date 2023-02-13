@@ -1,6 +1,5 @@
 import re
 from datetime import date
-from typing import Optional
 
 from fastapi.exceptions import HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -9,7 +8,7 @@ from sqlalchemy.orm import Session
 from src import models, schemas
 
 
-def create_unique_constrain_error_msg(exc: IntegrityError) -> Optional[str]:
+def create_unique_constrain_error_msg(exc: IntegrityError) -> str | None:
     pattern = r"^UNIQUE constraint failed: ([a-z_]+)\.([a-z_]+)$"
     for arg in exc.orig.args:
         assert isinstance(arg, str)
@@ -25,7 +24,7 @@ def create_unique_constrain_error_msg(exc: IntegrityError) -> Optional[str]:
 # User
 
 
-def read_user(db: Session, username: str) -> Optional[models.User]:
+def read_user(db: Session, username: str) -> models.User | None:
     return db.query(models.User).filter(models.User.name == username).first()
 
 
@@ -39,15 +38,15 @@ def create_customer(db: Session, customer: schemas.CustomerCreate) -> models.Cus
     return db_customer
 
 
-def read_customer(db: Session, customer_id: int) -> Optional[models.Customer]:
+def read_customer(db: Session, customer_id: int) -> models.Customer | None:
     return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
 
 
 def read_customers(
     db: Session,
-    name: Optional[str],
-    email: Optional[str],
-    phone: Optional[str],
+    name: str | None,
+    email: str | None,
+    phone: str | None,
     order_by: str,
     descending: bool,
 ):
@@ -96,7 +95,7 @@ def create_menu_category(db: Session, category: schemas.MenuCategoryCreate) -> m
     return db_category
 
 
-def read_menu_category(db: Session, category_id: int) -> Optional[models.MenuCategory]:
+def read_menu_category(db: Session, category_id: int) -> models.MenuCategory | None:
     return db.query(models.MenuCategory).filter(models.MenuCategory.id == category_id).first()
 
 
@@ -129,11 +128,11 @@ def create_menu_item(db: Session, menu_item: schemas.MenuItemCreate) -> models.M
     return db_menu_item
 
 
-def read_menu_item(db: Session, menu_item_id: int) -> Optional[models.MenuItem]:
+def read_menu_item(db: Session, menu_item_id: int) -> models.MenuItem | None:
     return db.query(models.MenuItem).filter(models.MenuItem.id == menu_item_id).first()
 
 
-def read_menu_items(db: Session, category_id: Optional[int], name: Optional[str], descending: bool):
+def read_menu_items(db: Session, category_id: int, name: str | None, descending: bool):
     query = db.query(models.MenuItem)
     if category_id is not None:
         query = query.filter(models.MenuItem.category_id == category_id)
@@ -169,7 +168,7 @@ def create_campaign(db: Session, campaign: schemas.CampaignCreate) -> models.Cam
     return db_campaign
 
 
-def read_campaign(db: Session, campaign_id: int) -> Optional[models.Campaign]:
+def read_campaign(db: Session, campaign_id: int) -> models.Campaign | None:
     return db.query(models.Campaign).filter(models.Campaign.id == campaign_id).first()
 
 
@@ -200,14 +199,14 @@ def create_payment(db: Session, payment: schemas.PaymentCreate) -> models.Order:
     return db_payment.order
 
 
-def read_payment(db: Session, payment_id: int) -> Optional[models.Payment]:
+def read_payment(db: Session, payment_id: int) -> models.Payment | None:
     return db.query(models.Payment).filter(models.Payment.id == payment_id).first()
 
 
 def read_payments(
     db: Session,
-    inclusive_start_date: Optional[date],
-    exclusive_end_date: Optional[date],
+    inclusive_start_date: date | None,
+    exclusive_end_date: date | None,
 ):
     query = db.query(models.Payment)
     if inclusive_start_date is not None:
@@ -244,7 +243,7 @@ def delete_payment(db: Session, payment_id: int) -> models.Order:
 # OrderItem
 
 
-def read_order_item(db: Session, order_item_id: int) -> Optional[models.OrderItem]:
+def read_order_item(db: Session, order_item_id: int) -> models.OrderItem | None:
     return db.query(models.OrderItem).filter(models.OrderItem.id == order_item_id).first()
 
 
@@ -303,7 +302,7 @@ def create_order(db: Session, order: schemas.OrderCreate) -> models.Order:
     return db_order
 
 
-def read_order(db: Session, order_id: int) -> Optional[models.Order]:
+def read_order(db: Session, order_id: int) -> models.Order | None:
     return db.query(models.Order).filter(models.Order.id == order_id).first()
 
 

@@ -33,8 +33,8 @@ def update_payment(payment_id: int, payment: schemas.PaymentEdit, db: Session = 
 
 @router.get("", response_model=LimitOffsetPage[schemas.Payment])
 def get_payments(
-    inclusive_start_date: Optional[str] = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),
-    exclusive_end_date: Optional[str] = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),
+    inclusive_start_date: str | None = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),
+    exclusive_end_date: str | None = Query(None, regex=r"^\d{4}-\d{2}-\d{2}$"),
     db: Session = Depends(get_db),
 ):
     # TODO order by
