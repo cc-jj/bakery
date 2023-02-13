@@ -8,8 +8,11 @@ fastapi = "~=0.70"
 uvicorn = "~=0.16"
 alembic = "~=1.7"
 pyjwt = "*"
-passlib = "*"
 sqlalchemy = "~=1.4"
+httpx = "*"
+pydantic = {extras = [ "email",], version = "~=1.8"}
+fastapi-pagination = {extras = [ "sqlalchemy",], version = "~=0.9"}
+passlib = {extras = [ "bcrypt",], version = ""}
 
 [dev-packages]
 Faker = "*"
@@ -22,11 +25,3 @@ click = "*"
 
 [requires]
 python_version = "3.9"
-
-[packages.pydantic]
-extras = [ "email",]
-version = "~=1.8"
-
-[packages.fastapi-pagination]
-extras = [ "sqlalchemy",]
-version = "~=0.9"
