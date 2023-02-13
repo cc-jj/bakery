@@ -31,7 +31,7 @@ With environment variables set, launch the app or migrate the database like so:
 
 # API Docs
 ```commandline
-http://localhost:3000/docs/
+http://localhost:8000/docs/
 ```
 
 # Migrations in detail
