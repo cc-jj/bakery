@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import (
     Boolean,
@@ -97,7 +98,7 @@ class Order(Base):
     notes = Column(String)
     completed = Column(Boolean, default=False)
 
-    campaign: Mapped["Campaign" | None] = relationship("Campaign", back_populates="orders")
+    campaign: Mapped[Optional["Campaign"]] = relationship("Campaign", back_populates="orders")
     customer: Mapped[Customer] = relationship("Customer", back_populates="orders")
     order_items: Mapped[list[OrderItem]] = relationship("OrderItem", back_populates="order")
     payments: Mapped[list["Payment"]] = relationship("Payment", back_populates="order")
