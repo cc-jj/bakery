@@ -7,6 +7,7 @@
 6. ~~CORS~~
 7. Logging (Uvicorn and Python)
 8. Frontend (templates)
+9. Use gunicorn as a process manager
 
 # Installation
 ```bash
