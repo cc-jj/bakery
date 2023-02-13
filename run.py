@@ -26,30 +26,27 @@ def cli():
     pass
 
 
-@click.group()
+@cli.group()
 def app():
     pass
 
 
-@click.command()
+@app.command()
 @click.option('-e', '--env-file', 'env_file', type=click.Path(exists=True), default=None)
 def launch(env_file):
     if env_file:
         load_env(env_file)
     correct_cwd()
     from src.settings import ENV, PORT
-    uvicorn.run('src.main:app', host='localhost', port=PORT, debug=ENV == 'dev')
+    uvicorn.run('src.main:app', host='localhost', port=PORT, reload=ENV == 'dev')
 
 
-app.add_command(launch)
-
-
-@click.group()
+@cli.group()
 def db():
     pass
 
 
-@click.command()
+@db.command()
 @click.option('-e', '--env-file', 'env_file', type=click.Path(exists=True), default=None)
 def update(env_file):
     if env_file:
@@ -64,7 +61,7 @@ def update(env_file):
         click.echo('aborted')
 
 
-@click.command()
+@db.command()
 @click.option('-e', '--env-file', 'env_file', type=click.Path(exists=True), default=None)
 def create_migration(env_file):
     if env_file:
@@ -76,14 +73,6 @@ def create_migration(env_file):
         raise ValueError("message cannot be empty")
     cfg = alembic.config.Config("alembic.ini")
     alembic.command.revision(cfg, message, autogenerate=True)
-
-
-db.add_command(update)
-db.add_command(create_migration)
-
-
-cli.add_command(app)
-cli.add_command(db)
 
 
 if __name__ == '__main__':
