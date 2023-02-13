@@ -11,9 +11,7 @@ from sqlalchemy import (
     String,
     TypeDecorator,
 )
-from sqlalchemy.orm import relationship
-
-from src.database import Base
+from sqlalchemy.orm import DeclarativeBase, relationship
 
 
 def utcnow() -> datetime:
@@ -34,20 +32,20 @@ class DateTimeUTC(TypeDecorator):
         return value.replace(tzinfo=timezone.utc)
 
 
-class User(Base):
-    __tablename__ = "users"
+class Base(DeclarativeBase):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
     date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
+
+
+class User(Base):
+    __tablename__ = "users"
     name = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
 
 
 class Customer(Base):
     __tablename__ = "customers"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     name = Column(String, index=True, nullable=False)
     email = Column(String, unique=True, index=True)
     phone = Column(String, unique=True, index=True)
@@ -58,9 +56,6 @@ class Customer(Base):
 
 class MenuItem(Base):
     __tablename__ = "menu_items"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     name = Column(String, index=True, nullable=False)
     category_id = Column(Integer, ForeignKey("menu_categories.id"), nullable=False)
     description = Column(String)
@@ -73,9 +68,6 @@ class MenuItem(Base):
 
 class MenuCategory(Base):
     __tablename__ = "menu_categories"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     name = Column(String, unique=True, nullable=False)
     description = Column(String)
 
@@ -84,9 +76,6 @@ class MenuCategory(Base):
 
 class OrderItem(Base):
     __tablename__ = "order_items"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     menu_item_id = Column(Integer, ForeignKey("menu_items.id"), nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     quantity = Column(Float, nullable=False)
@@ -100,9 +89,6 @@ class OrderItem(Base):
 
 class Order(Base):
     __tablename__ = "orders"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
     campaign_id = Column(Integer, ForeignKey("campaigns.id"))
     date_ordered = Column(Date)
@@ -121,9 +107,6 @@ class Campaign(Base):
     """Promotional campaigns, example Dec 18 2021 open house"""
 
     __tablename__ = "campaigns"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     name = Column(String, unique=True, nullable=False)
     description = Column(String, nullable=False)
     date_start = Column(Date)
@@ -134,9 +117,6 @@ class Campaign(Base):
 
 class Payment(Base):
     __tablename__ = "payments"
-    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    date_created = Column(DateTimeUTC, default=utcnow, nullable=False)
-    date_modified = Column(DateTimeUTC, default=utcnow, onupdate=utcnow, nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     amount = Column(Float, nullable=False)
     method = Column(String, nullable=False)  # cash, paypal, zelle

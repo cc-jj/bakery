@@ -6,14 +6,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src import auth, crud, database, models, schemas
-from src.database import Base, SessionLocal
+from src.database import SessionLocal
 from src.dependencies import get_db
 from src.main import app
 
 
 @pytest.fixture(scope="session")
 def db_engine():
-    database.Base.metadata.create_all(bind=database.engine)
+    models.Base.metadata.create_all(bind=database.engine)
     return database.engine
 
 
@@ -49,7 +49,7 @@ def client(db, user):
         yield client
 
 
-def serialize_model(model: Base, schema_cls: Type[pydantic.BaseModel]):
+def serialize_model(model: models.Base, schema_cls: Type[pydantic.BaseModel]):
     return json.loads(schema_cls.from_orm(model).json())
 
 
