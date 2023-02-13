@@ -52,7 +52,7 @@ def create_menu_item(menu_item: schemas.MenuItemCreate, db: Session = Depends(ge
 
 @router.get("", response_model=LimitOffsetPage[schemas.MenuItem])
 def get_menu(
-    category_id: int,
+    category_id: int | None = None,
     name: str | None = None,
     descending: str | None = None,
     db: Session = Depends(get_db),

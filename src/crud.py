@@ -134,14 +134,14 @@ def read_menu_item(db: Session, menu_item_id: int) -> models.MenuItem | None:
 
 
 def read_menu_items(
-    db: Session, category_id: int, name: str | None, descending: bool
+    db: Session, category_id: int | None, name: str | None, descending: bool
 ) -> Query[models.MenuItem]:
     query = db.query(models.MenuItem)
     if category_id is not None:
         query = query.filter(models.MenuItem.category_id == category_id)
     if name is not None:
         query = query.filter(models.MenuItem.name.startswith(name))
-    order_by = models.MenuItem.name.desc() if descending else models.MenuCategory.name
+    order_by = models.MenuItem.name.desc() if descending else models.MenuItem.name
     return query.order_by(order_by)
 
 
