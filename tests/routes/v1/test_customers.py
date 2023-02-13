@@ -8,7 +8,6 @@ from src import crud, models, schemas
 
 
 def test_create_edit(client):
-
     # create
     payload = {
         "name": "cj",
@@ -45,7 +44,6 @@ def test_create_edit(client):
 
 @pytest.mark.parametrize("field", ["email", "phone"])
 def test_create_unique_constraint(client, customer_cj, field):
-
     payload = {"name": "foo", field: customer_cj[field]}
     response = client.post("/api/v1/customers", json=payload)
     assert response.status_code == 400
@@ -54,7 +52,6 @@ def test_create_unique_constraint(client, customer_cj, field):
 
 @pytest.mark.parametrize("field", ["email", "phone"])
 def test_edit_unique_constraint(client, customer_cj, customer_sarah, field):
-
     payload = customer_cj
     del payload["date_created"]
     del payload["date_modified"]
@@ -67,7 +64,6 @@ def test_edit_unique_constraint(client, customer_cj, customer_sarah, field):
 
 
 def test_get(client, customer_cj, customer_sarah, customer_sarah_2):
-
     # get by id
     response = client.get(f'/api/v1/customers/{customer_cj["id"]}')
     assert response.status_code == 200

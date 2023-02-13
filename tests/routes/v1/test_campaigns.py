@@ -54,7 +54,6 @@ def test_campaigns(client):
 
 
 def test_create_campaign_unique_constraint(client, campaign):
-
     payload = {"name": campaign["name"], "description": "foo"}
     response = client.post("/api/v1/campaigns", json=payload)
     assert response.status_code == 400
@@ -62,7 +61,6 @@ def test_create_campaign_unique_constraint(client, campaign):
 
 
 def test_edit_campaign_unique_constraint(client, campaign):
-
     campaign_2 = {"name": "foo", "description": "bar"}
     response = client.post("/api/v1/campaigns", json=campaign_2)
     assert response.status_code == 201

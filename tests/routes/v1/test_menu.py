@@ -4,7 +4,6 @@ import freezegun
 
 
 def test_categories(client):
-
     # create
     payload = {"name": "Cocoa Bomb", "description": "Chocolate milk bomb"}
     date_created = datetime.now(timezone.utc)
@@ -50,7 +49,6 @@ def test_categories(client):
 
 
 def test_create_category_unique_constraint(client, menu_category):
-
     payload = {"name": menu_category["name"]}
     response = client.post("/api/v1/menu/categories", json=payload)
     assert response.status_code == 400
@@ -58,7 +56,6 @@ def test_create_category_unique_constraint(client, menu_category):
 
 
 def test_edit_category_unique_constraint(client, menu_category):
-
     category_2 = {"name": "foo"}
     response = client.post("/api/v1/menu/categories", json=category_2)
     assert response.status_code == 201
@@ -70,7 +67,6 @@ def test_edit_category_unique_constraint(client, menu_category):
 
 
 def test_menu_items(client, menu_category):
-
     # create
     payload = {
         "name": "Chocolate Cocoa Bomb",

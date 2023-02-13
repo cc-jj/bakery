@@ -4,7 +4,6 @@ import freezegun
 
 
 def test_payments(client, order):
-
     # create
     payload = {
         "order_id": order["id"],
