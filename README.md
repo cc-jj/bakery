@@ -10,7 +10,7 @@
 
 # Installation
 ```bash
-python -V  # 3.9.7
+python -V  # 3.11.2
 pipenv install --dev
 ```
 
